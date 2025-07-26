@@ -27,8 +27,6 @@
 
 Follow these instructions to clone the project after you've forked it and run it locally.
 
-### 1. Clone the repository
-
 ```bash
 git clone https://github.com/yourusername/beadoodle.git
 cd beadoodle
