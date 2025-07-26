@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Webcam from "react-webcam";
 import { Hands } from "@mediapipe/hands";
 import { Camera } from "@mediapipe/camera_utils";
+import bgImage from "./background2.gif";
 
 const Handdraw = () => {
   const webcamref = useRef(null);
@@ -9,6 +10,8 @@ const Handdraw = () => {
   //prev finger position
   const prevposref = useRef(null);
   const colorRef = useRef("white");
+
+  const [filter, setFilter] = useState("original");
 
   const [drawColor, setDrawColor] = useState("red");
 
@@ -90,104 +93,213 @@ const Handdraw = () => {
 
   return (
     <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-        position: "relative",
-        
-      }}
-    >
-      <div style={{ position: "relative", width: 640, height: 480 }}>
-        <Webcam
-          ref={webcamref}
-          style={{
+  style={{
+    display: "flex",
+    height: "100vh",
+    backgroundImage: `url(${bgImage})`,
 
-            width: 640,
-            height: 480,
-            transform: "scaleX(-1)",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            zIndex: 1,
-          }}></Webcam>
-        <canvas
-          ref={canvasRef}
-          width={640}
-          height={480}
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            transform: "scaleX(-1)",
-            zIndex: 2,
-            backgroundColor: "transparent",
-          }}
-        ></canvas>
-      </div>
-      <button
-        onClick={clearCanvas}
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    padding: "20px",
+    boxSizing: "border-box",
+  }}
+>
+  
+  <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div style={{ position: "relative", width: 640, height: 480 }}>
+      <Webcam
+        ref={webcamref}
+        style={{
+          width: 640,
+          height: 480,
+          transform: "scaleX(-1)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 1,
+          filter:
+            filter === "vintage"
+              ? "sepia(0.6) contrast(0.8) brightness(1.1) saturate(0.7)"
+              : "none",
+        }}
+      />
+      <canvas
+        ref={canvasRef}
+        width={640}
+        height={480}
         style={{
           position: "absolute",
-          top: 10,
-          right: 10,
-          zIndex: 3,
-          padding: "10px 20px",
-          backgroundColor: "#ff4444",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontWeight: "bold",
+          left: 0,
+          top: 0,
+          transform: "scaleX(-1)",
+          zIndex: 2,
+          backgroundColor: "transparent",
         }}
-      >
-        clear canvas
-      </button>
-
-      <div
-        style={{
-          marginTop: "20px",
-          display: "flex",
-          gap: "10px",
-          justifyContent: "center",
-          flexWrap: "wrap",
-        }}
-      >
-        {[
-          "black",
-          "white",
-          "gray",
-          "green",
-          "lightgreen",
-          "blue",
-          "lightblue",
-          "yellow",
-          "red",
-          "orange",
-          "pink",
-          "purple",
-          "#fcd5b5",
-          "brown"
-        ].map((color) => (
-          <button
-            key={color}
-            onClick={() => setDrawColor(color)}
-            title={color}
-            style={{
-              width: 30,
-              height: 30,
-              backgroundColor: color,
-              borderRadius: "15%",
-              border: drawColor === color ? "3px solid gray" : "1px solid #ccc",
-              outline: drawColor === color ? "2px solid black" : "none",
-              cursor: "pointer",
-            }}
-          ></button>
-        ))}
-      </div>
+      />
     </div>
+
+    <div
+      style={{
+        marginTop: 10,
+        
+        display: "flex",
+        gap: "10px",
+        justifyContent: "center",
+      }}
+    >
+      <button
+        onClick={() => setFilter("original")}
+        style={{
+          padding: "6px 12px",
+          cursor: "pointer",
+          backgroundColor: filter === "original" ? "lightpink" : "grey",
+          
+          borderRadius: "20px",
+          fontWeight: filter === "original" ? "bold" : "normal",
+        }}
+      >
+        original
+      </button>
+      <button
+        onClick={() => setFilter("vintage")}
+        style={{
+          padding: "6px 12px",
+          cursor: "pointer",
+          backgroundColor: filter === "vintage" ? "lightpink" : "grey",
+          
+          borderRadius: "20px",
+          fontWeight: filter === "vintage" ? "bold" : "normal",
+        }}
+      >
+        vintage
+      </button>
+    </div>
+
+    <div
+      style={{
+        marginTop: "20px",
+        display: "flex",
+        gap: "10px",
+        justifyContent: "center",
+        flexWrap: "wrap",
+        maxWidth: "90%",
+      }}
+    >
+      {[
+        "black",
+        "white",
+        "gray",
+        "green",
+        "lightgreen",
+        "blue",
+        "lightblue",
+        "yellow",
+        "red",
+        "orange",
+        "pink",
+        "purple",
+        "#fcd5b5",
+        "brown",
+      ].map((color) => (
+        <button
+          key={color}
+          onClick={() => setDrawColor(color)}
+          title={color}
+          style={{
+            width: 30,
+            height: 30,
+            backgroundColor: color,
+            borderRadius: "15%",
+            border: drawColor === color ? "3px solid gray" : "1px solid #ccc",
+            outline: drawColor === color ? "2px solid black" : "none",
+            cursor: "pointer",
+          }}
+        ></button>
+      ))}
+    </div>
+  </div>
+
+  <div
+    style={{
+      width: "250px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-start",
+      paddingLeft: "20px",
+      paddingTop: "20px",
+    }}
+  >
+    <button
+      onClick={clearCanvas}
+      style={{
+        padding: "10px 20px",
+        backgroundColor: "#c3074fff",
+        color: "white",
+        border: "none",
+        borderRadius: "20px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        marginBottom: "20px",
+      }}
+    >
+      🫐clear canvas🫐
+    </button>
+
+    <h3 style={{ margin: 0, color: "lightpink" }}>🍒 how do i use? 🍒</h3>
+    <p style={{ fontSize: "16px", color: "#f0f0f0",fontWeight: "bold" }}>
+      🐡pinch with your fingers to draw. <br />
+      🐡show your palm or stop pinching to stop drawing. <br />
+      🐡use the 'clear canvas button' to start over!
+    </p>
+
+ <button
+  onClick={() => {
+    const webcamVideo = webcamref.current.video;
+    const drawingCanvas = canvasRef.current;
+
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = drawingCanvas.width;
+    tempCanvas.height = drawingCanvas.height;
+
+    const ctx = tempCanvas.getContext("2d");
+
+    ctx.save();
+    ctx.scale(-1, 1);
+if (filter === "vintage") {
+    ctx.filter = "sepia(0.6) contrast(0.8) brightness(1.1) saturate(0.7)";
+  } else {
+    ctx.filter = "none";
+  }
+    ctx.drawImage(webcamVideo, -tempCanvas.width, 0, tempCanvas.width, tempCanvas.height);
+ctx.filter = "none";
+    ctx.drawImage(drawingCanvas, -tempCanvas.width, 0, tempCanvas.width, tempCanvas.height);
+ 
+    ctx.restore();
+
+    const link = document.createElement("a");
+    link.download = "webcam-drawing.png";
+    link.href = tempCanvas.toDataURL("image/png");
+    link.click();
+  }}
+  style={{
+    marginTop: "20px",
+    padding: "10px 20px",
+    backgroundColor: "#026402ff",
+    color: "white",
+    border: "none",
+    borderRadius: "20px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  }}
+>
+  🍋‍🟩download my photo!🍋‍🟩
+</button>
+
+
+  </div>
+</div>
+
   );
 };
 export default Handdraw;
